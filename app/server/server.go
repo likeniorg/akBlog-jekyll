@@ -10,9 +10,13 @@ import (
 )
 
 // 公开入口使用HTTP协议
-func EntranceHTTP() {
+func EntranceHTTP(port string) {
+	// 不指定端口将使用默认端口
+	if port == "" {
+		port = config.Get("port")
+	}
 	server := http.Server{
-		Addr:    config.Get("port"),
+		Addr:    port,
 		Handler: handlers.Server(),
 	}
 	err := server.ListenAndServe()
