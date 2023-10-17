@@ -8,5 +8,8 @@ rm -rf _site/*.xml rm -rf _site/*.js rm -rf _site/*.json
 cp -r _site/* ../web/
 # 忽略配置文件上传github
 echo "config/*" > ../.gitignore
-echo "web/*" >> ../.gitignore
 echo "akBlogInfo.tar.gz" >> ../.gitignore
+echo "web/*" >> ../.gitignore
+echo "jekyll/_posts" >> ../.gitignore
+echo "jekyll/header.jpeg" >> ../.gitignore
+

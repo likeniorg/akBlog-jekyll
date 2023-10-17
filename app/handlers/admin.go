@@ -3,7 +3,6 @@ package handlers
 import (
 	"akBlog/app/config"
 	filehashchecking "akBlog/cmd/fileHashChecking"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +10,9 @@ import (
 
 func verifyIP() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if ctx.ClientIP() != config.Get("serverIP") {
-			fmt.Println("c" + ctx.ClientIP())
+		if ctx.ClientIP() == config.Get("serverIP") || ctx.ClientIP() == "::1" {
+			ctx.Next()
+		} else {
 			ctx.String(200, "亲亲你涉嫌非法访问，请不要继续尝试了")
 			ctx.Abort()
 		}

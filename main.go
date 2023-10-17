@@ -21,12 +21,14 @@ func main() {
 		fmt.Println("是否开启80端口,需要root权限(y/n)")
 		fmt.Scanln(&isHTTP)
 		if isHTTP == "y" {
-			go server.EntranceHTTP("80")
+			go server.EntranceHTTP(":80")
 			fmt.Println("成功开启80端口")
 		}
 
+	} else {
+		go server.EntranceHTTP("")
 	}
 
 	// 管理员后台
-	server.AdminHTTP()
+	server.AdminHttps()
 }

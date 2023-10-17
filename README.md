@@ -48,3 +48,9 @@ init.sh
 # outputConfig.sh
 将写入的头像和文章打包压缩为akBlogInfo.tar.gz，然后删除原本路径中的信息
 ```
+## 访问管理员后台
+###  导入证书
+* chromium:
+    设置-隐私和安全-安全-管理设备证书-授权机构-导入-(akBlog/config/cert/adminCa/ca.crt)-勾选全部-确认
+* firefox:
+    设置-隐私与安全-查看证书-证书颁发机构-导入-(akBlog/config/cert/adminCa/ca.crt)-勾选全部-确认

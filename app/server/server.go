@@ -4,6 +4,7 @@ import (
 	"akBlog/app/config"
 	"akBlog/app/handlers"
 	"akBlog/app/util"
+	"crypto/tls"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -52,9 +53,9 @@ func AdminHttps() {
 	server := http.Server{
 		Addr:    config.Get("adminPort"),
 		Handler: handlers.AdminServer(),
-		// TLSConfig: &tls.Config{
-		// 	ClientAuth: tls.RequireAndVerifyClientCert,
-		// },
+		TLSConfig: &tls.Config{
+			ClientAuth: tls.RequireAndVerifyClientCert,
+		},
 	}
 
 	// 证书名字规范 域名 + ".crt" 域名 + ".key"

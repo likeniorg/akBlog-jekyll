@@ -71,12 +71,48 @@ func Get(name string) string {
 
 }
 
-// akBlog配置创建
-func createConfig() {
+// 选择部署模式
+func SelectMode() {
+
 	//配置文件夹创建
 	os.Mkdir("config/cert/", 0700)
 	os.Mkdir("config/cert/Ca", 0700)
 	os.Mkdir("config/cert/adminCa", 0700)
+
+	fmt.Println(`选择部署模式(默认本地部署)
+	(0) 本地部署
+		访问地址		localhost:8080
+		管理员访问地址	localhost:59812
+
+	(1) 自定义
+	`)
+
+	var selectVar string
+	fmt.Scanln(&selectVar)
+	switch selectVar {
+	case "0":
+		// 默认配置信息
+		configInfo := ConfigInfo{"127.0.0.1", "localhost", ":8080", ":59812", ""}
+
+		// 将数据写入配置文件
+		data, err := json.MarshalIndent(configInfo, "", "	")
+		util.ErrprDisplay(err)
+		err = os.WriteFile(configPath, data, 0600)
+		util.ErrprDisplay(err)
+
+	case "1":
+		createConfig()
+
+	default:
+		fmt.Println("输入不合法")
+	}
+	// 设置配置文件夹为只读
+	util.Command("chmod 400 config/cert/adminCa/*")
+	util.Command("chmod 400 " + configPath)
+}
+
+// akBlog配置创建
+func createConfig() {
 
 	// 配置信息
 	configInfo := ConfigInfo{}
@@ -129,10 +165,6 @@ func createConfig() {
 	err = os.WriteFile(configPath, data, 0600)
 	util.ErrprDisplay(err)
 
-	// 设置配置文件夹为只读
-	util.Command("chmod 400 config/cert/adminCa/*")
-	util.Command("chmod 400 " + configPath)
-
 	// 控制台输出配置信息
 	fmt.Println("网站管理员端口设置为" + Get("adminPort"))
 	fmt.Println("web端口为" + Get("port"))
@@ -183,12 +215,12 @@ func createCA(doMain string) {
 	-in ./config/cert/adminCa/` + domain + `.csr \
 	-out ./config/cert/adminCa/` + domain + `.crt`)
 	fmt.Println("生成证书进度：100%")
+
 	// 删除不需要的证书
-	// shell("rm -rf ./config/cert/adminCa/*.csr")
-	// shell("rm -rf ./config/cert/adminCa/v3.ext")
-	// // shell("rm -rf ./config/cert/adminCa/ca.crt")
-	// shell("rm -rf ./config/cert/adminCa/ca.key")
-	// shell("rm -rf ./config/cert/adminCa/ca.srl")
+	shell("rm -rf ./config/cert/adminCa/*.csr")
+	shell("rm -rf ./config/cert/adminCa/v3.ext")
+	shell("rm -rf ./config/cert/adminCa/ca.key")
+	shell("rm -rf ./config/cert/adminCa/ca.srl")
 }
 
 // 执行命令
