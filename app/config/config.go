@@ -22,7 +22,7 @@ func init() {
 			fmt.Println("退出成功")
 			os.Exit(1)
 		}
-		createConfig()
+		SelectMode()
 	}
 }
 
@@ -38,6 +38,8 @@ type ConfigInfo struct {
 	AdminPort string
 	// 公开web服务器是否使用HTTPS
 	IsHTTPS string
+	// 管理员端口是否使用HTTPS协议
+	AdminHTTPS string
 }
 
 // 快捷获取配置文件信息
@@ -65,6 +67,8 @@ func Get(name string) string {
 
 	case "isHTTPS":
 		return c.IsHTTPS
+	case "adminHTTPS":
+		return c.AdminHTTPS
 	}
 
 	return ""
@@ -81,8 +85,9 @@ func SelectMode() {
 
 	fmt.Println(`选择部署模式(默认本地部署)
 	(0) 本地部署
-		访问地址		localhost:8080
-		管理员访问地址	localhost:59812
+		访问地址			localhost:8080
+		管理员访问地址		localhost:59812
+		均不使用HTTPS协议
 
 	(1) 自定义
 	`)
@@ -92,7 +97,7 @@ func SelectMode() {
 	switch selectVar {
 	case "0":
 		// 默认配置信息
-		configInfo := ConfigInfo{"127.0.0.1", "localhost", ":8080", ":59812", ""}
+		configInfo := ConfigInfo{"127.0.0.1", "localhost", ":8080", ":59812", "", ""}
 
 		// 将数据写入配置文件
 		data, err := json.MarshalIndent(configInfo, "", "	")
@@ -159,6 +164,17 @@ func createConfig() {
 		fmt.Println("!!!")
 	}
 
+	// 管理员端口是否使用HTTPS协议
+	fmt.Println(configInfo.AdminPort + "端口是否使用HTTPS协议(y/n)")
+	var adminHTTPS string
+	fmt.Scanln(&adminHTTPS)
+	if isHTTPS == "y" {
+		configInfo.IsHTTPS = "y"
+		fmt.Println(configInfo.AdminHTTPS + "端口将使用https协议")
+		fmt.Println("!!!")
+		fmt.Println("默认情况管理员端口证书将在config/cert/adminCa/文件夹下创建")
+		fmt.Println("!!!")
+	}
 	// 将数据写入配置文件
 	data, err := json.MarshalIndent(configInfo, "", "	")
 	util.ErrprDisplay(err)

@@ -1,0 +1,26 @@
+{{define "admin.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+</head>
+<body>
+    <h1>上传文章</h1>
+    <form action="/article" method="post">
+        <p>选择文章分组</p>
+        <select name="articleType" id="">
+            {{range $i,$v := .articleType}}
+            <option value="{{$v}}">{{$v}}</option>
+            {{end}}
+        </select>
+        <br>
+        <p>文件名格式：2023-10-10-Title.md</p>
+        <input type="file" name="filename" id="">
+        <input type="submit" value="提交">
+    </form>
+</body>
+</html>
+{{end}}

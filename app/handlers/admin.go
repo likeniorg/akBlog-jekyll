@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"akBlog/app/config"
+	"akBlog/app/util"
 	filehashchecking "akBlog/cmd/fileHashChecking"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,28 +28,49 @@ func AdminServer() http.Handler {
 	adminR := gin.New()
 
 	// 导入mirrors文件
-	adminR.LoadHTMLFiles("web/mirrors.html")
+	adminR.LoadHTMLFiles("web/mirrors.html", "web/admin.html")
+
+	// 所有页面都要验证IP
+	adminR.Use(verifyIP())
 
 	// index页面
-	adminR.GET("/", verifyIP(), func(ctx *gin.Context) {
+	adminR.GET("/", func(ctx *gin.Context) {
+		// 获取_posts路径下文件夹
+		dir, err := os.ReadDir("jekyll/_posts/")
+		util.ErrprDisplay(err)
+		fmt.Println(dir)
+		// 保存路径名字
+		articleType := []string{}
+		for _, v := range dir {
+			articleType = append(articleType, v.Name())
+			fmt.Println(articleType)
+		}
+
+		ctx.HTML(200, "admin.html", gin.H{"articleType": articleType})
+	})
+
+	// 文件上传
+	adminR.POST("/saveFile", func(ctx *gin.Context) {
+		// 单独文件上传
+		file, _ := ctx.FormFile("file")
+
+		// 写入HASH
+		filehashchecking.AddHash(file.Filename)
+
+		//保存文件
+		ctx.SaveUploadedFile(file, filehashchecking.ScanDirPath+file.Filename)
+
+		ctx.Redirect(200, "/mirrors")
+	})
+
+	// index页面
+	adminR.GET("/mirrors", func(ctx *gin.Context) {
 
 		// 验证文件哈希值
 		success, fail := filehashchecking.CheckingHash()
 
 		// 返回网页验证记录
 		ctx.HTML(200, "mirrors.html", gin.H{"success": success, "fail": fail})
-	})
-
-	// 文件上传
-	adminR.POST("/saveFile", verifyIP(), func(ctx *gin.Context) {
-		// 单独文件上传
-		file, _ := ctx.FormFile("file")
-
-		//保存文件
-		ctx.SaveUploadedFile(file, filehashchecking.ScanDirPath+file.Filename)
-
-		// 写入HASH
-		filehashchecking.AddHash(file.Filename)
 	})
 
 	return adminR
