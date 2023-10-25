@@ -10,6 +10,7 @@ cp -r _site/* ../web/
 echo "config/*" > ../.gitignore
 echo "akBlogInfo.tar.gz" >> ../.gitignore
 echo "web/*" >> ../.gitignore
-echo "jekyll/_posts" >> ../.gitignore
+echo "jekyll/_posts/*" >> ../.gitignore
 echo "jekyll/header.jpeg" >> ../.gitignore
+echo "web/files/sha256.json" >> ../.gitignore
 
