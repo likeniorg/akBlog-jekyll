@@ -54,3 +54,6 @@ init.sh
     设置-隐私和安全-安全-管理设备证书-授权机构-导入-(akBlog/config/cert/adminCa/ca.crt)-勾选全部-确认
 * firefox:
     设置-隐私与安全-查看证书-证书颁发机构-导入-(akBlog/config/cert/adminCa/ca.crt)-勾选全部-确认
+
+# 模板选择
+提供Jekyll和hugo两种静态生成网站选项
